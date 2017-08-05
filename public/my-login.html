@@ -1,0 +1,63 @@
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="my-login">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                height: 68px;
+            }
+            h2 {
+                flex: 1;
+            }
+        </style>
+
+        <firebase-auth
+                id="auth"
+                user="{{user}}"
+                status-known="{{statusKnown}}"
+                provider="google"
+        >
+        </firebase-auth>
+
+        <template is="dom-if" if="[[user]]">
+            <h2>[[user.displayName]]'s notes</h2>
+        </template>
+
+
+        <div id="auth-controls">
+            <paper-button raised on-tap="loginGoogle" hidden$="[[user]]">Přihlásit Googlem</paper-button>
+            <paper-button raised on-tap="logout" hidden$="[[!user]]">Odhlásit</paper-button>
+        </div>
+
+    </template>
+    <script>
+        class MyLogin extends Polymer.Element {
+            static get is() {
+                return 'my-login';
+            }
+            static get properties() {
+                return {
+                    user: {
+                        type: Object,
+                    },
+                    statusKnown:{
+                        type:Object
+                    }
+
+                };
+            }
+            loginGoogle(){
+                return this.$.auth.signInWithPopup();
+            }
+            logout(){
+                return this.$.auth.signOut();
+            }
+        }
+        window.customElements.define(MyLogin.is, MyLogin);
+    </script>
+</dom-module>

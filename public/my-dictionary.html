@@ -1,0 +1,114 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="my-dictionary">
+    <template>
+        <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
+            #create {
+                width: 100%;
+            }
+            #notes-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            #notes-list li {
+                @apply(--layout-horizontal);
+                @apply(--layout-center);
+            }
+            #notes-list .content {
+                @apply(--layout-flex);
+                padding: 8px;
+            }
+            #notes-controls {
+                @apply(--layout-horizontal);
+                @apply(--layout-center-justified);
+            }
+        </style>
+
+        <div class="card">
+            <firebase-auth user="{{user}}"></firebase-auth>
+            <firebase-query
+                    id="query"
+                    path="/dictionary"
+                    data="{{words}}">
+            </firebase-query>
+            <firebase-query
+                    id="queryWordType"
+                    path="/wordType"
+                    data="{{wordType}}">
+            </firebase-query>
+
+            <div id="words" hidden$="[[!user]]">
+                <ul id="words-list">
+                    <template is="dom-repeat" items="[[words]]" as="word">
+                        <li>
+                            <p class="content">[[word.es]]</p>
+                            <paper-icon-button icon="clear" note="[[word]]" on-tap="remove"></paper-icon-button>
+                        </li>
+                    </template>
+                </ul>
+                <paper-input id="input" label="Take a word..."></paper-input>
+                <div id="words-controls">
+                    <paper-button id="add" on-tap="add">Add</paper-button>
+                </div>
+            </div>
+
+            <p>Typy</p>
+            <ul id="type-list">
+                <template is="dom-repeat" items="[[wordType]]" as="type">
+                    <li on-tap="showItem">[[type.$key]] / [[type.$val]] </li>
+                </template>
+            </ul>
+        </div>
+    </template>
+    <script>
+        class MyDictionary extends Polymer.Element{
+            static get is(){
+                return 'my-dictionary'
+            }
+            static get properties() {
+                return {
+                    notes: {
+                        type: Object,
+                    },
+                    wordType: {
+                        type: Object,
+                    },
+                    words: {
+                        type: Object,
+                    },
+
+                };
+            }
+            showItem(){
+                console.log(this.wordType);
+            }
+            add(){
+                this.$.query.ref.push({
+                    es: this.$.input.value,
+                    cz: "česky",
+                    en: "",
+                    druh:"druh",
+                    cislo: 5
+                });
+                this.$.input.value = null;
+            }
+            remove(){
+                var key = e.currentTarget.note.$key;
+                this.$.query.ref.child(key).remove();
+            }
+        }
+        window.customElements.define(MyDictionary.is, MyDictionary);
+    </script>
+
+</dom-module>

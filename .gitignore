@@ -1,6 +1,8 @@
 bower_components/
 public/bower_components/
-.idea/
 build/
 node_modules/
 
+.idea/*
+node_modules/*
+.gitignore

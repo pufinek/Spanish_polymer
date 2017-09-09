@@ -1,0 +1,47 @@
+{
+  "dictionary" : {
+    "-Kqs_eDAB301sY3Xv0t4" : {
+      "cislo" : 5,
+      "cz" : "česky",
+      "druh" : "druh",
+      "es" : "španělsky"
+    },
+    "-KtIiBfp9IHtiwUWaw6k" : {
+      "cislo" : 5,
+      "cz" : "česky",
+      "druh" : "druh",
+      "en" : "",
+      "es" : "pepicek"
+    },
+    "-KtIu9EeZ4V2j_R5cvlh" : {
+      "cislo" : 5,
+      "cz" : "česky",
+      "druh" : "druh",
+      "en" : "",
+      "es" : "kkkk"
+    }
+  },
+  "users" : {
+    "ldn8NXRj8QfIvZZbqJyhZu66AF03" : {
+      "notes" : {
+        "-KqnagV0agw7eOueso9n" : {
+          "content" : "delej si ukoly"
+        }
+      }
+    }
+  },
+  "wordType" : {
+    "type0" : "abstrakt",
+    "type1" : "podstatné jméno",
+    "type10" : "citoslovce",
+    "type11" : "fráze",
+    "type2" : "přídavné jméno",
+    "type3" : "zájmeno",
+    "type4" : "číslovka",
+    "type5" : "sloveso",
+    "type6" : "příslovce",
+    "type7" : "předložka",
+    "type8" : "spojka",
+    "type9" : "částice"
+  }
+}

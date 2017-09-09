@@ -10,9 +10,11 @@
                 align-items: center;
                 justify-content: flex-end;
                 height: 68px;
+                padding: 0 15px;
             }
             h2 {
                 flex: 1;
+                font-size: 18px;
             }
         </style>
 
@@ -25,8 +27,7 @@
         </firebase-auth>
 
         <template is="dom-if" if="[[user]]">
-            <h2>[[user.displayName]]'s notes</h2>
-
+            <h2>[[user.displayName]]</h2>
         </template>
 
 

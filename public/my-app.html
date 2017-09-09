@@ -1,6 +1,13 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/polymerfire/firebase-app.html">
+
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+
 <link rel="import" href="my-login.html">
 <link rel="import" href="my-dictionary.html">
+<link rel="import" href="global-style.html">
+<!--<link rel="import" href="my-app-header-layout.html">-->
+<!--<link rel="import" href="./global-data-mixin.html">-->
 
 <dom-module id="my-app">
     <template>
@@ -11,18 +18,82 @@
                 api-key="AIzaSyDpAOsZBs1WTdUc_Ct9X3Lnd08ILZ-Ieas"
         >
         </firebase-app>
+
+        <custom-style>
+            <style include="global-style">
+                :host {
+                    --app-primary-color: #726460;
+                    --app-secondary-color: #1A0505;
+                    --blue-header:#42a5f5;
+                    display: block;
+                }
+                paper-toast.error{
+                    --paper-toast-background-color: var(--paper-red-a100);
+                    --paper-toast-color:black;
+                }
+                paper-toast.success{
+                    --paper-toast-background-color: var(--paper-green-200);
+                    --paper-toast-color:black;
+                }
+                paper-toast.info{
+                    --paper-toast-background-color: var(--paper-yellow-200);
+                    --paper-toast-color:black;
+                }
+
+            </style>
+        </custom-style>
+
         <header>
             <my-login></my-login>
         </header>
-
-            <h3>poznámky</h3>
             <!--<my-notes></my-notes>-->
             <my-dictionary></my-dictionary>
+        <paper-toast id="message"  class$="fit-bottom text-center [[messageStyle]]"  text="[[messageText]]"></paper-toast>
     </template>
     <script>
         class MyApp extends Polymer.Element {
             static get is() {
                 return 'my-app';
+            }
+            ready(){
+                super.ready();
+                this.addEventListener("custom-error", this._handleErrorEvent.bind(this));
+            }
+            static get properties() {
+                return {
+                    messageText:{
+                        type:String,
+                        value: 'Akce se úspěšně provedla'
+                    },
+                    messageStyle:{
+                        type:String,
+                        value: ''
+                    }
+                };
+            }
+            _handleErrorEvent(e) {
+                this.displayErrorMessage(e.detail.message, e.detail.type);
+            }
+
+            displayErrorMessage(text, type) {
+                switch(type){
+                    case 'error':
+                        this.messageText="Chyba: " + text;
+                        this.messageStyle='error';
+                        break;
+                    case 'success':
+                        this.messageText=text;
+                        this.messageStyle='success';
+                        break;
+                    case 'info':
+                        this.messageText="Info: " + text;
+                        this.messageStyle='info';
+                        break;
+                    default:
+                        this.messageText="Info: " + text;
+                }
+                this.$.message.open();
+
             }
         }
         window.customElements.define(MyApp.is, MyApp);

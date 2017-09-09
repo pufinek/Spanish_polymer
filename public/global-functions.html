@@ -1,0 +1,17 @@
+<script>
+    /* @polymerMixin */
+    GlobalFunctions = function (superclass) {
+        return class extends superclass {
+            dispatchMessage(text, typeMessage) {
+                this.dispatchEvent(new CustomEvent("custom-error", {
+                    detail: {
+                        message:text,
+                        type: typeMessage
+                    },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+        }
+    }
+</script>

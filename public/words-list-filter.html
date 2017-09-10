@@ -1,0 +1,96 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="bower_components/iron-list/iron-list.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+<!--<link rel="import" href="bower_components/paper-toggle-button/paper-toggle-button.html">-->
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
+<!--<link rel="import" href="my-icons.html">-->
+<link rel="import" href="global-style.html">
+<link rel="import" href="./global-functions.html">
+
+<dom-module id="words-list-filter">
+    <template>
+        <custom-style>
+            <style include="global-style">
+                :host {
+                    display: block;
+                }
+                paper-dropdown-menu,
+                paper-listbox {
+                    width: 270px;
+                }
+
+                paper-dropdown-menu paper-item {
+                    display: block;
+                    min-width: 100%;
+                    padding: 3px 5px;
+                }
+
+                .direction-wrapper {
+                    display: inline-flex;
+
+                }
+
+                .direction-wrapper paper-toggle-button {
+                    margin-left: 10px;
+                }
+            </style>
+        </custom-style>
+        <div class="card">
+            <h3>Filtr</h3>
+            <paper-input style="max-width: 540px" always-float-label label="Fulltext vyhledání" placeholder="hledaný výraz" value="{{filter.searchText::input}}"></paper-input>
+
+            <paper-dropdown-menu id="selectorOfType"class="filter-state" label="Filtr - slovní druh" vertical-align="top" horizontal-align="left" attr-for-selected="value"
+                                 no-animations>
+                <paper-listbox slot="dropdown-content" selected="{{index}}">
+                    <paper-item value="0">- vše -</paper-item>
+                    <template is="dom-repeat" items="[[types]]">
+                        <paper-item value$="{{item.$key}}" data-selected="{{item.$key}}">{{item.$val}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+        </div>
+
+    </template>
+
+    <script>
+        class WordsListFilter extends Polymer.Element {
+            static get is() { return 'words-list-filter'; }
+
+            static get properties() {
+                return {
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                    index:{
+                        type:Number,
+                        value:0,
+                        observer:"changedSelector"
+                    },
+                    types:Object
+                }
+            }
+
+            changedSelector(){
+                console.log("changed filter");
+                var element=this.$.selectorOfType.selectedItem;
+                if(element!==undefined){
+                    this.filter.selectedType = element.dataSelected;
+                    //nevím proč ale nepropisuje se fce reagující na změnu filtru.* v rodiči
+                    this.dispatchEvent(new CustomEvent('start-filter', {
+                        bubbles: true,
+                        composed: true,
+                    }));
+                }
+
+            }
+        }
+
+        window.customElements.define(WordsListFilter.is, WordsListFilter);
+    </script>
+</dom-module>

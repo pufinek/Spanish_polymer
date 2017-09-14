@@ -100,22 +100,31 @@
                 </div>
             </div>
 
-        <words-list-filter types="[[wordType]]" filter ="{{filter}}"></words-list-filter>
-        <p>Výsledků <strong>[[wordsFiltred.length]]</strong></p>
+            <words-list-filter types="[[wordType]]" filter ="{{filter}}"></words-list-filter>
+            <p>Výsledků <strong>[[wordsFiltred.length]]</strong></p>
 
-        <div id="words">
-            <iron-list items="[[wordsFiltred]]" as="word">
-                <template>
-                    <div class="word">
-                        <p><span>cz: </span>[[word.meaningCZ]]</p>
-                        <p><span>es: </span>[[word.meaningES]]</p>
-                    </div>
-                </template>
-            </iron-list>
-        </div>
-        <template is="dom-if" if="[[noResult]]">
-            <p>Žádná slova neodpovídají vybranému filtru</p>
-        </template>
+            <div id="words">
+                <iron-list items="[[wordsFiltred]]" as="word">
+                    <template>
+                        <div class="word">
+                            <p><span>cz: </span>[[word.meaningCZ]]</p>
+                            <p><span>es: </span>[[word.meaningES]]</p>
+                        </div>
+                    </template>
+                </iron-list>
+            </div>
+            <template is="dom-if" if="[[noResult]]">
+                <p>Žádná slova neodpovídají vybranému filtru</p>
+            </template>
+
+            <paper-fab-speed-dial class="floating-menu">
+                <paper-button noink on-tap="addToList">
+                    <paper-fab-speed-dial-action icon="icons:add-circle-outline">Přidat k procvičovaným</paper-fab-speed-dial-action>
+                </paper-button>
+                <paper-button noink on-tap="startTest">
+                    <paper-fab-speed-dial-action icon="icons:check" >Spustit výuku ([[count]])</paper-fab-speed-dial-action>
+                </paper-button>
+            </paper-fab-speed-dial>
 
         </div>
     </template>
@@ -2444,10 +2453,18 @@
                         value:false
                     },
                     selectedWordType:String,
+                    trainingList:{
+                        type:Object,
+                        value:{}
+                    },
+                    count:{
+                        type:Number,
+                        value:0,
+                    }
                 };
             }
             static get observers() {
-                return ["_selectData(words, filter.*)"]
+                return ["_selectData(words, filter.*)", "countToTraining(trainingList)"]
             }
 
             _selectData() {
@@ -2458,9 +2475,9 @@
                 searchText = searchText.toLowerCase();
                 var array = [];
                 
-//                array = this.words.filter((item) => {
-//                        return _checkSearchString(searchText, item) && _checkType(selectedType, item.type);
-//                });
+//              array = this.words.filter((item) => {
+//                  return _checkSearchString(searchText, item) && _checkType(selectedType, item.type);
+//              });
                 array = this.words.filter((item) => {
                         console.log("check", item);
                         return _checkSearchString(searchText, item) && _checkType(selectedType, item.type);
@@ -2489,7 +2506,11 @@
                     console.log("result", result);
                     return result;
                 }
+            }
 
+            countToTraining(){
+                this.count = Object.keys(this.trainingList).length;
+                console.log("count",this.count);
             }
             validation(){
                 if(this.formData.meaningCZ === undefined ||
@@ -2541,6 +2562,22 @@
                         genus:slovicka[i].genus,
                     });
                 }
+            }
+            addToList(){
+                //TODO: spojit jen ty, co tam doposud nejsou (filtr)
+                //TODO: přidat ke stávajícímu seznamu procvičovaných slovíček
+                console.log("současný seznam tréninku", this.trainingList);
+                console.log("k přidání seznam tréninku", this.wordsFiltred);
+                //this.trainingList =  Object.assign({}, this.trainingList, this.wordsFiltred);
+                // var individualWords = this.wordsFiltred.filter((w) => {
+                //         return w.$key = this.trainingList.$key;
+                // });
+                var connection = this.trainingList.concat(this.wordsFiltred);
+                console.log("spojení", connection);
+               this.trainingList = connection;
+            }
+            startTest(){
+                console.log("start test");
             }
 
 

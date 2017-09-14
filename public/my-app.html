@@ -1,7 +1,20 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/polymerfire/firebase-app.html">
 
+<link rel="import" href="bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="bower_components/app-layout/helpers/helpers.html">
+
 <link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="bower_components/app-route/app-location.html">
+<link rel="import" href="bower_components/app-route/app-route.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="bower_components/paper-fab-speed-dial/paper-fab-speed-dial.html">
+<link rel="import" href="bower_components/paper-fab-speed-dial/paper-fab-speed-dial-action.html">
 
 <link rel="import" href="my-login.html">
 <link rel="import" href="my-dictionary.html">
@@ -22,11 +35,39 @@
         <custom-style>
             <style include="global-style">
                 :host {
-                    --app-primary-color: #726460;
-                    --app-secondary-color: #1A0505;
-                    --blue-header:#42a5f5;
                     display: block;
+                    position: relative;
+                    padding-top: 80px;
+                    padding-bottom: 64px;
+                    min-height: 100vh;
+                    --app-primary-color: #202020;
+                    --app-secondary-color: #757575;
+                    --app-accent-color: #172C50;
+                    --paper-button-ink-color: var(--app-accent-color);
+                    --paper-icon-button-ink-color: var(--app-accent-color);
+                    --paper-spinner-color: var(--app-accent-color);
+                    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+                    color: var(--app-primary-color);
                 }
+
+                [hidden] {
+                    display: none !important;
+                }
+                
+                app-header {
+                    @apply --layout-fixed-top;
+                    z-index: 1;
+                    background-color: rgba(255, 255, 255, 0.95);
+                    --app-header-shadow: {
+                        box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.2);
+                        height: 10px;
+                        bottom: -10px;
+                    };
+                }
+                paper-icon-button {
+                    color: var(--app-primary-color);
+                }
+
                 paper-toast.error{
                     --paper-toast-background-color: var(--paper-red-a100);
                     --paper-toast-color:black;
@@ -40,14 +81,41 @@
                     --paper-toast-color:black;
                 }
 
+
             </style>
         </custom-style>
 
-        <header>
-            <my-login></my-login>
-        </header>
+        <app-location route="{{route}}"></app-location>
+        <app-route
+            route="{{route}}"
+            pattern="/:page"
+            data="{{pageData}}"
+            tail="{{subroute}}">
+        </app-route>
+
+        <app-header role="navigation" id="header" effects="waterfall" condenses reveals>
+            <app-toolbar>
+                <div class="left-bar-item">
+                    <!--<paper-icon-button
+                        class="menu-btn"
+                        icon="menu"
+                        on-click="_toggleDrawer"
+                        aria-label="Categories">
+                    </paper-icon-button>-->
+                <a class="back-btn" href="/[[pageData.page]]" tabindex="-1">
+                    <paper-icon-button icon="arrow-back" aria-label="Go back">zpet</paper-icon-button>
+                </a>
+                </div>
+                <div class="logo" main-title><a href="/" aria-label="Spanish Lessons">Spanish</a></div>
+
+                <div class="cart-btn-container">
+                     <my-login></my-login>
+                </div>
+            </app-toolbar>
+        </app-header>
+
             <!--<my-notes></my-notes>-->
-            <my-dictionary></my-dictionary>
+        <my-dictionary></my-dictionary>
         <paper-toast id="message"  class$="fit-bottom text-center [[messageStyle]]"  text="[[messageText]]"></paper-toast>
     </template>
     <script>
